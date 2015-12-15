@@ -49,7 +49,7 @@ motionControlView = React.createClass
         model.synth.setVolume(scaledVol)
 
         scaledFreq = Utils.scale(0, 20, Resources.FREQ_MIN, Resources.FREQ_MAX, @state.leftRightVal)
-        model.synth.setFrequency(scaledFreq)
+        @props.setFreq(scaledFreq)
 
     deviceMotionHandler: (eventData) ->
         info = "[X, Y, Z]"
@@ -65,10 +65,14 @@ motionControlView = React.createClass
         # Grab the acceleration including gravity from the results
         acceleration = eventData.accelerationIncludingGravity;
 
-        @setState {leftRightVal: round(Resources.SENSOR_OFFSET - acceleration.x)}
-        # info = xyz.replace("X", @leftRightVal);
+        if model.motion_flip
+            @setState {leftRightVal: round(acceleration.x + Resources.SENSOR_OFFSET)}
+            @setState {frontBackVal: round(acceleration.y + Resources.SENSOR_OFFSET)}
 
-        @setState {frontBackVal: round(Resources.SENSOR_OFFSET - acceleration.y)}
+        else
+            @setState {leftRightVal: round(Resources.SENSOR_OFFSET - acceleration.x)}
+            @setState {frontBackVal: round(Resources.SENSOR_OFFSET - acceleration.y)}
+
         # info = info.replace("Y", @frontBackVal);
 
         @setState {zVal: round(acceleration.z)}

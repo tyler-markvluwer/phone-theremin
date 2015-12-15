@@ -34,12 +34,15 @@ appView = React.createClass
         switch index
             when 0 then @props.model.setCurrView(Resources.SYNTH_VIEW)
             when 1 then @props.model.setCurrView(Resources.ABOUT_VIEW)
+            when 3 then @props.model.toggleMotionFlip()
             else alert("error, unknown index in leftNav")
 
     render: ->
         menuItems = [
             { route: 'customization', text: 'Synth'},
             { route: 'get-started', text: 'About'},
+            { type: MenuItem.Types.SUBHEADER, text: 'Meta' },
+            { route: '', text: 'Flip Rotation'},
             { type: MenuItem.Types.SUBHEADER, text: 'Meta' },
             {
                 linkButtton: true
@@ -77,8 +80,8 @@ appView = React.createClass
             >
                 Just tilt your phone and you're ready to go!
             </Dialog>
+            <LeftNav ref="leftNav" docked={false} menuItems={menuItems} onChange={@menuOnChange} disableSwipeToOpen={true} />
         </div>
 
 module.exports = React.createFactory(appView)
-            # <LeftNav ref="leftNav" docked={false} menuItems={menuItems} onChange={@menuOnChange} />
 

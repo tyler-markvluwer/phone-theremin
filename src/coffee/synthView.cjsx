@@ -19,7 +19,7 @@ synthView = React.createClass
     #       React Functions
     #################################
     componentDidMount: ->
-        @props.model.on 'change', @update
+        # @props.model.on 'change', @update
 
     update: ->
         @forceUpdate()
@@ -27,6 +27,7 @@ synthView = React.createClass
     getInitialState: ->
         {
             quantize: false
+            curr_note: 'N/A'
         }
 
     startSynth: ->
@@ -38,9 +39,17 @@ synthView = React.createClass
     setVolume: (event, vol_) ->
         model.synth.setVolume(vol_)
 
-    setFrequency: (event, freq_) ->
-        newFreq = Utils.scale(0, 1, Resources.FREQ_MIN, Resources.FREQ_MAX, freq_)
-        model.synth.setFrequency(newFreq)
+    setFrequencySlider: (event, freq_) ->
+        freq_ = Utils.scale(0, 1, Resources.FREQ_MIN, Resources.FREQ_MAX, freq_)
+        @setFrequency(freq_)
+
+    setFrequency: (freq_) ->
+        if model.synth.quantize
+            note = Utils.findClosestNote(freq_)
+            freq_ = note.note_freq
+            @setState(curr_note: note.note_name)
+
+        model.synth.setFrequency(freq_)
 
     _toggleQuantize: () ->
         if model.synth.quantize
@@ -86,12 +95,12 @@ synthView = React.createClass
                         {'Quantize: ' + @state.quantize}
                     </h2>
                     <h2 className='span12' style={textAlign: 'center'}>
-                        {'Current Note: ' + model.curr_note}
+                        {'Current Note: ' + @state.curr_note}
                     </h2>
                 </div>
                 <br></br>
                 <div className='row'>
-                    <MotionControlView model={@props.model} />
+                    <MotionControlView model={@props.model} setFreq={@setFrequency}/>
                 </div>
                 <br></br>
                 <div className='row'>
@@ -112,7 +121,7 @@ synthView = React.createClass
                         <Slider
                             name='pitch-slider'
                             description='Pitch'
-                            onChange={@setFrequency}
+                            onChange={@setFrequencySlider}
                             defaultValue={0.5}
                         />
                     </div>

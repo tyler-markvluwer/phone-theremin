@@ -18,9 +18,27 @@ class Synth
             alert("No Context Class")
 
         @osc = @context.createOscillator();
-        @vol = @context.createGain();
+        @osc.type = 'triangle'
 
+        @vol = @context.createGain();
         @vol.gain.value = 0.0; # from 0 to 1, 1 full volume, 0 is muted
+
+        @delay = @context.createDelay();
+        @delay.delayTime.value = 0.4;
+
+        @feedback = @context.createGain();
+        @feedback.gain.value = 0.8;
+
+        @filter = @context.createBiquadFilter();
+        @filter.frequency.value = 1000;
+
+        @delay.connect(@feedback);
+        @feedback.connect(@filter);
+        @filter.connect(@delay);
+
+        @osc.connect(@delay);
+        @delay.connect(@vol);
+
         @osc.connect(@vol); # connect @osc to @vol
         @vol.connect(@context.destination); # connect vol to @context distination
         @osc.start(@context.currentTime + 1) # start it 1 seconds from now
@@ -28,10 +46,21 @@ class Synth
     start: ->
         @stopped = false
         @vol.gain.value = @volumeLevel
+        @feedback.gain.value = @volumeLevel
+        console.log "setting volume and feedback: " + @vol.gain.value + ':' + @feedback.gain.value
 
     stop: ->
         @stopped = true
         @vol.gain.value = 0
+
+    createDelay: ->
+
+        # @osc.connect(@context.destination);
+        # @delay.connect(@context.destination);
+
+
+    setWaveType: (wave) ->
+        @osc.type = wave
 
     setVolume: (vol_) ->
         console.log "setting volume: " + vol_
@@ -41,11 +70,6 @@ class Synth
             @start()
 
     setFrequency: (freq_) ->
-        if @quantize
-            note = Utils.findClosestNote(freq_)
-            freq_ = note.note_freq
-            model.setCurrNote(note.note_name)
-
         @osc.frequency.value = freq_
 
 module.exports = Synth
