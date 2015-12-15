@@ -31,6 +31,7 @@ motionControlView = React.createClass
         leftRightVal: 0.0
         frontBackVal: 0.0
         zVal: 0.0
+        handled_last_time: false
     }
 
     init: ->
@@ -52,15 +53,15 @@ motionControlView = React.createClass
         @props.setFreq(scaledFreq)
 
     deviceMotionHandler: (eventData) ->
+        # Only handle motion every other time
+        if @state.handled_last_time
+            @state.handled_last_time = false
+            return
+        else
+           @state.handled_last_time = true 
+
         info = "[X, Y, Z]"
         xyz = "[X, Y, Z]"
-        
-        # Grab the acceleration including gravity from the results
-        # acceleration = eventData.acceleration
-        # info = xyz.replace("X", round(acceleration.x))
-        # info = info.replace("Y", round(acceleration.y))
-        # info = info.replace("Z", round(acceleration.z))
-        # document.getElementById("moAccel").innerHTML = info;
 
         # Grab the acceleration including gravity from the results
         acceleration = eventData.accelerationIncludingGravity;
@@ -73,18 +74,7 @@ motionControlView = React.createClass
             @setState {leftRightVal: round(Resources.SENSOR_OFFSET - acceleration.x)}
             @setState {frontBackVal: round(Resources.SENSOR_OFFSET - acceleration.y)}
 
-        # info = info.replace("Y", @frontBackVal);
-
         @setState {zVal: round(acceleration.z)}
-        # info = info.replace("Z", round(acceleration.z));
-        # document.getElementById("moAccelGrav").innerHTML = info;
-
-        # Grab the acceleration including gravity from the results
-        # rotation = eventData.rotationRate;
-        # info = xyz.replace("X", round(rotation.alpha));
-        # info = info.replace("Y", round(rotation.beta));
-        # info = info.replace("Z", round(rotation.gamma));
-        # document.getElementById("moRotation").innerHTML = info;
 
         info = eventData.interval;
         document.getElementById("moInterval").innerHTML = info;

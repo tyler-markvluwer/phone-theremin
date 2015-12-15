@@ -24,10 +24,11 @@ class Synth
         @vol.gain.value = 0.0; # from 0 to 1, 1 full volume, 0 is muted
 
         @delay = @context.createDelay();
-        @delay.delayTime.value = 0.4;
+        @delay.delayTime.value = 0.5;
+        @delay.delayTime.value = 0.5;
 
         @feedback = @context.createGain();
-        @feedback.gain.value = 0.8;
+        @feedback.gain.value = 0.4;
 
         @filter = @context.createBiquadFilter();
         @filter.frequency.value = 1000;
@@ -36,10 +37,10 @@ class Synth
         @feedback.connect(@filter);
         @filter.connect(@delay);
 
-        @osc.connect(@delay);
-        @delay.connect(@vol);
-
         @osc.connect(@vol); # connect @osc to @vol
+        @vol.connect(@delay);
+        @delay.connect(@context.destination);
+
         @vol.connect(@context.destination); # connect vol to @context distination
         @osc.start(@context.currentTime + 1) # start it 1 seconds from now
 
