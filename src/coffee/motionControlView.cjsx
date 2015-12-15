@@ -65,7 +65,7 @@ motionControlView = React.createClass
         # Grab the acceleration including gravity from the results
         acceleration = eventData.accelerationIncludingGravity;
 
-        @setState {leftRightVal: round(acceleration.x + Resources.SENSOR_OFFSET)}
+        @setState {leftRightVal: round(Resources.SENSOR_OFFSET - acceleration.x)}
         # info = xyz.replace("X", @leftRightVal);
 
         @setState {frontBackVal: round(Resources.SENSOR_OFFSET - acceleration.y)}
@@ -97,18 +97,10 @@ motionControlView = React.createClass
             </div>
             <br></br>
             <div className='row'>
-                 <span>Event Supported: </span><span id="dmEvent"></span>
-            </div>
-            <div className='row'>
-                <span>acceleration: </span><span id="moAccel"></span>
-            </div>
-            <div className='row'>
                 <span>accelerationIncludingGravity: </span>
                 <span id="moAccelGrav">
                     {'[' + @state.leftRightVal + ', ' + @state.frontBackVal + ', ' + @state.zVal + ']'}
                 </span>
-            </div>
-            <div className='row'>
             </div>
             <div className='row'>
                 <span>interval: </span><span id="moInterval"></span>

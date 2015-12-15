@@ -19,10 +19,15 @@ synthView = React.createClass
     #       React Functions
     #################################
     componentDidMount: ->
-        # @props.model.on 'change', @update
+        @props.model.on 'change', @update
 
     update: ->
         @forceUpdate()
+
+    getInitialState: ->
+        {
+            quantize: false
+        }
 
     startSynth: ->
         model.synth.start()
@@ -36,6 +41,19 @@ synthView = React.createClass
     setFrequency: (event, freq_) ->
         newFreq = Utils.scale(0, 1, Resources.FREQ_MIN, Resources.FREQ_MAX, freq_)
         model.synth.setFrequency(newFreq)
+
+    _toggleQuantize: () ->
+        if model.synth.quantize
+            model.synth.quantize = false
+        else
+            model.synth.quantize = true
+
+        @setState({quantize: model.synth.quantize})
+
+    _mouseUpCallback: () ->
+        model.synth.quantize = false
+        console.log "mouse is up"
+
 
     render: ->
         PlusButton = (<IconButton onClick={console.log('hi')}><AddCircle /></IconButton>)
@@ -62,6 +80,14 @@ synthView = React.createClass
                             onTouchTap={@stopSynth}
                         />
                     </div>
+                </div>
+                <div className='row'>
+                    <h2 className='span12' style={textAlign: 'center'}>
+                        {'Quantize: ' + @state.quantize}
+                    </h2>
+                    <h2 className='span12' style={textAlign: 'center'}>
+                        {'Current Note: ' + model.curr_note}
+                    </h2>
                 </div>
                 <br></br>
                 <div className='row'>
@@ -92,6 +118,14 @@ synthView = React.createClass
                     </div>
                     <div className='col-sm-2'></div>
                 </div>
+                <div className='row'>
+                    <RaisedButton
+                        label='Pitch Quantize'
+                        onTouchTap={@_toggleQuantize}
+                        style={width: '100%'}
+                    />
+                </div>
+                <br></br>
             </div>
         </div>
 

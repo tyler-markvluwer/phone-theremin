@@ -1,8 +1,10 @@
+Utils = require('./utils')
 
 class Synth
     constructor: ->
         @volumeLevel = 0.5
         @stopped = true
+        @quantize = false
 
         contextClass = (window.AudioContext or
             window.webkitAudioContext or 
@@ -39,6 +41,11 @@ class Synth
             @start()
 
     setFrequency: (freq_) ->
+        if @quantize
+            note = Utils.findClosestNote(freq_)
+            freq_ = note.note_freq
+            model.setCurrNote(note.note_name)
+
         @osc.frequency.value = freq_
 
 module.exports = Synth
