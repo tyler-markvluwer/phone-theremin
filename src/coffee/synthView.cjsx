@@ -49,22 +49,23 @@ synthView = React.createClass
             <br></br>
             <div className='container'>
                 <div className='row'>
-                    <div className='col-sm-6'>
+                    <div className='col-sm-3'>
                         <RaisedButton
                             label='Start Synth'
                             onTouchTap={@startSynth}
                         />
                     </div>
-                    <div className='col-sm-6'>
-                        <MotionControlView model={@props.model} />
+
+                    <div className='col-sm-3'>
+                        <RaisedButton
+                            label='Stop Synth'
+                            onTouchTap={@stopSynth}
+                        />
                     </div>
                 </div>
                 <br></br>
                 <div className='row'>
-                    <RaisedButton
-                        label='Stop Synth'
-                        onTouchTap={@stopSynth}
-                    />
+                    <MotionControlView model={@props.model} />
                 </div>
                 <br></br>
                 <div className='row'>

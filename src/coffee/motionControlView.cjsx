@@ -45,10 +45,10 @@ motionControlView = React.createClass
     updateSynthValues: ->
         console.log "updating synth values"
 
-        scaledVol = Utils.scale(0, 20, 0, 1, @state.leftRightVal)
+        scaledVol = Utils.scale(0, 20, 0, 1, @state.frontBackVal)
         model.synth.setVolume(scaledVol)
 
-        scaledFreq = Utils.scale(0, 20, Resources.FREQ_MIN, Resources.FREQ_MAX, @state.frontBackVal)
+        scaledFreq = Utils.scale(0, 20, Resources.FREQ_MIN, Resources.FREQ_MAX, @state.leftRightVal)
         model.synth.setFrequency(scaledFreq)
 
     deviceMotionHandler: (eventData) ->
@@ -68,7 +68,7 @@ motionControlView = React.createClass
         @setState {leftRightVal: round(acceleration.x + Resources.SENSOR_OFFSET)}
         # info = xyz.replace("X", @leftRightVal);
 
-        @setState {frontBackVal: round(acceleration.y + Resources.SENSOR_OFFSET)}
+        @setState {frontBackVal: round(Resources.SENSOR_OFFSET - acceleration.y)}
         # info = info.replace("Y", @frontBackVal);
 
         @setState {zVal: round(acceleration.z)}
@@ -88,11 +88,14 @@ motionControlView = React.createClass
 
 
     render: ->
-        <div className='container' >
-            <RaisedButton
-                label='Start Motion Tracking'
-                onTouchTap={@init}
-            />
+        <div className='container'>
+            <div className='row'>
+                <RaisedButton
+                    label='Start Motion Tracking'
+                    onTouchTap={@init}
+                />
+            </div>
+            <br></br>
             <div className='row'>
                  <span>Event Supported: </span><span id="dmEvent"></span>
             </div>

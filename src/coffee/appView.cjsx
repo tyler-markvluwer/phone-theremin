@@ -73,6 +73,7 @@ appView = React.createClass
                 actions={standardActions}
                 actionFocus="submit"
                 defaultOpen={true}
+                modal={true}
             >
                 Just tilt your phone and you're ready to go!
             </Dialog>
