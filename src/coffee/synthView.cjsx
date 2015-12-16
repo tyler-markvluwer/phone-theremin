@@ -28,13 +28,16 @@ synthView = React.createClass
         {
             quantize: false
             curr_note: 'N/A'
+            startStopButtonText: 'Start Synth'
         }
 
-    startSynth: ->
-        model.synth.start()
-
-    stopSynth: ->
-        model.synth.stop()
+    _synthOnTouchTapCallback: ->
+        if model.synth.stopped
+            model.synth.start()
+            @setState({startStopButtonText: "Stop Synth"})
+        else
+            model.synth.stop()
+            @setState({startStopButtonText: "Start Synth"})
 
     setVolume: (event, vol_) ->
         model.synth.setVolume(vol_)
@@ -78,27 +81,19 @@ synthView = React.createClass
                 <div className='row'>
                     <div className='col-sm-3'>
                         <RaisedButton
-                            label='Start Synth'
-                            onTouchTap={@startSynth}
-                        />
-                    </div>
-
-                    <div className='col-sm-3'>
-                        <RaisedButton
-                            label='Stop Synth'
-                            onTouchTap={@stopSynth}
+                            label={@state.startStopButtonText}
+                            onTouchTap={@_synthOnTouchTapCallback}
                         />
                     </div>
                 </div>
                 <div className='row'>
-                    <h2 className='span12' style={textAlign: 'center'}>
+                    <h4 className='span12' style={textAlign: 'center'}>
                         {'Quantize: ' + @state.quantize}
-                    </h2>
-                    <h2 className='span12' style={textAlign: 'center'}>
+                    </h4>
+                    <h4 className='span12' style={textAlign: 'center'}>
                         {'Current Note: ' + @state.curr_note}
-                    </h2>
+                    </h4>
                 </div>
-                <br></br>
                 <div className='row'>
                     <MotionControlView model={@props.model} setFreq={@setFrequency}/>
                 </div>

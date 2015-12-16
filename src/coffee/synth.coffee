@@ -24,14 +24,13 @@ class Synth
         @vol.gain.value = 0.0; # from 0 to 1, 1 full volume, 0 is muted
 
         @delay = @context.createDelay();
-        @delay.delayTime.value = 0.5;
-        @delay.delayTime.value = 0.5;
+        @delay.delayTime.value = 0.3;
 
         @feedback = @context.createGain();
-        @feedback.gain.value = 0.4;
+        @feedback.gain.value = 0.1;
 
         @filter = @context.createBiquadFilter();
-        @filter.frequency.value = 1000;
+        # @filter.frequency.value = 1000;
 
         @delay.connect(@feedback);
         @feedback.connect(@filter);
